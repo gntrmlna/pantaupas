@@ -149,6 +149,50 @@
 
     </div>
 
+    <div class="mt-6 rounded-2xl bg-white p-6 shadow">
+        <div class="mb-5">
+            <h2 class="text-lg font-semibold">Ranking UPT</h2>
+            <p class="text-sm text-gray-500">Berdasarkan total penilaian publikasi</p>
+        </div>
+
+        <div class="space-y-3">
+            @foreach($skorUPT as $index=>$nilai)
+            <div class="flex items-center justify-between rounded-xl border p-4 hover:bg-gray-50">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 text-center text-2xl">
+                        @if($index==0) 🥇
+                        @elseif($index==1) 🥈
+                        @elseif($index==2) 🥉
+                        @else #{{ $index+1 }}
+                        @endif
+                    </div>
+
+                    <div>
+                        <h3 class="font-semibold">{{ $nilai['upt']->nama }}</h3>
+
+                        <p class="text-sm text-gray-500">
+                            @if($nilai['total']>=85)
+                                Sangat Baik
+                            @elseif($nilai['total']>=70)
+                                Baik
+                            @elseif($nilai['total']>=50)
+                                Cukup
+                            @else
+                                Kurang
+                            @endif
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-right">
+                    <h2 class="text-2xl font-bold">{{ $nilai['total'] }}</h2>
+                    <p class="text-xs text-gray-400">poin</p>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
 
     <!-- PENILAIAN -->
 
@@ -340,7 +384,7 @@
 
                 <tbody>
 
-                    @forelse($publikasis as $item)
+                    @forelse($publikasis->take(5) as $item)
 
                     <tr class="border-b text-center">
 
@@ -399,6 +443,12 @@
 
             </table>
 
+        </div>
+        <div class="border-t p-4 text-center">
+            <a href="{{ route('publikasi.index') }}"
+            class="text-sm font-medium text-primary hover:underline">
+                Lihat semua →
+            </a>
         </div>
 
     </div>

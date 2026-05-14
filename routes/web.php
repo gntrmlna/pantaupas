@@ -18,7 +18,13 @@ use App\Http\Controllers\PublikasiController;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
+
+    if(auth()->check()){
+        return redirect()->route('dashboard');
+    }
+
+    return redirect()->route('login');
+
 });
 
 
@@ -35,16 +41,33 @@ Route::middleware('auth')->group(function () {
         [PublikasiController::class,'index']
     )->name('dashboard');
 
+    Route::get('/users',[UserController::class,'index'])
+        ->name('users.index');
+
+    Route::get('/users/{user}/edit',[UserController::class,'edit'])
+        ->name('users.edit');
+
+    Route::put('/users/{user}',[UserController::class,'update'])
+        ->name('users.update');
+
+
+    Route::delete(
+        '/users/{user}',
+        [UserController::class,'destroy']
+    )->name('users.destroy');
+
     Route::get(
         '/users/create',
         [UserController::class,'create']
     )->name('users.create');
 
-
     Route::post(
         '/users',
         [UserController::class,'store']
     )->name('users.store');
+
+    Route::get('/publikasi',[PublikasiController::class,'list'])
+    ->name('publikasi.index');
 
     Route::get('/publikasi/create', [
         PublikasiController::class,
@@ -54,6 +77,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/publikasi',
         [PublikasiController::class,'store']
     )->name('publikasi.store');
+
+    Route::get('/publikasi/{publikasi}/edit',
+        [PublikasiController::class,'edit'])
+        ->name('publikasi.edit');
+
+    Route::put('/publikasi/{publikasi}',
+        [PublikasiController::class,'update'])
+        ->name('publikasi.update');
+
+    Route::delete('/publikasi/{publikasi}',
+        [PublikasiController::class,'destroy'])
+        ->name('publikasi.destroy');
 });
 
 require __DIR__.'/auth.php';

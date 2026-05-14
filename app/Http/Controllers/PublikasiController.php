@@ -372,21 +372,62 @@ class PublikasiController extends Controller
 
 
 
+        if(auth()->user()->role=='admin'){
+
+            return view(
+                'dashboard-admin',
+                compact(
+                    'publikasis',
+                    'chartData',
+                    'topUpt',
+                    'skorUPT',
+                    'upts'
+                )
+            );
+
+        }
+
+        $userUpt=auth()->user()->upt_id;
+
+        $detail=collect($skorUPT)
+            ->firstWhere(
+                'upt.id',
+                $userUpt
+            );
+
+        $nilaiUPT=$detail['total'] ?? 0;
+
         return view(
-            'dashboard',
-
+            'dashboard-operator',
             compact(
-
                 'publikasis',
-                'chartData',
-                'topUpt',
-                'skorUPT',
-                'upts'
-
+                'nilaiUPT',
+                'detail'
             )
-
         );
 
+    }
+
+    public function list(Request $request)
+    {
+        $query = Publikasi::with('upt');
+
+        if(auth()->user()->role!='admin'){
+            $query->where('upt_id',auth()->user()->upt_id);
+        }
+
+        if($request->search){
+            $query->where(function($q) use ($request){
+                $q->where('kegiatan','like','%'.$request->search.'%')
+                ->orWhereHas('upt',function($upt) use ($request){
+                        $upt->where('nama','like','%'.$request->search.'%');
+                });
+            });
+        }
+
+        $publikasis = $query->latest()->paginate(10);
+
+        return view('publikasi.index',compact('publikasis'));
     }
 
     public function create()
@@ -419,5 +460,54 @@ class PublikasiController extends Controller
         return redirect()
             ->back()
             ->with('success', 'Data berhasil disimpan');
+    }
+
+    public function edit(Publikasi $publikasi)
+    {
+        if(auth()->user()->role!='admin' && $publikasi->upt_id!=auth()->user()->upt_id){
+            abort(403);
+        }
+
+        $upts=Upt::orderBy('nama')->get();
+
+        return view('publikasi.edit',compact('publikasi','upts'));
+    }
+
+    public function update(Request $request, Publikasi $publikasi)
+    {
+        if(auth()->user()->role!='admin' && $publikasi->upt_id!=auth()->user()->upt_id){
+            abort(403);
+        }
+
+        $request->validate([
+            'tanggal'=>'required',
+            'kegiatan'=>'required',
+            'link'=>'required|url'
+        ]);
+
+        $publikasi->update([
+            'upt_id'=>auth()->user()->role=='admin'
+                ? $request->upt_id
+                : auth()->user()->upt_id,
+
+            'tanggal'=>$request->tanggal,
+            'kegiatan'=>$request->kegiatan,
+            'link'=>$request->link
+        ]);
+
+        return redirect()
+            ->route('publikasi.index')
+            ->with('success','Data berhasil diupdate');
+    }
+
+    public function destroy(Publikasi $publikasi)
+    {
+        if(auth()->user()->role!='admin' && $publikasi->upt_id!=auth()->user()->upt_id){
+            abort(403);
+        }
+
+        $publikasi->delete();
+
+        return back()->with('success','Data berhasil dihapus');
     }
 }

@@ -92,15 +92,31 @@
                     </span>
                 </a>
 
-                <a
-                    href="{{ route('publikasi.create') }}"
-                    class="flex items-center gap-3 rounded p-3 hover:bg-white/10"
-                >
-                    <span>➕</span>
+                @if(auth()->user()->role=='admin')
 
-                    <span class="menu-text">
-                        Input Data
+                <a
+                    href="{{ route('users.index') }}"
+                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-white/80 hover:bg-white/10"
+                >
+
+                    <span>👤</span>
+
+                    <span>
+
+                        Kelola User
+
                     </span>
+
+                </a>
+
+                @endif
+
+                <a href="{{ route('publikasi.index') }}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-white/80 hover:bg-white/10">
+
+                    <span>📄</span>
+                    <span>Data Publikasi</span>
+
                 </a>
 
                 <form

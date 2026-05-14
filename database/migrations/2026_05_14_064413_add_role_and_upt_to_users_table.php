@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('role')
                 ->default('operator');
 
-            $table->string('upt')
-                ->nullable();
 
         });
     }
