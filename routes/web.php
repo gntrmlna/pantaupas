@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PublikasiController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -89,6 +90,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/publikasi/{publikasi}',
         [PublikasiController::class,'destroy'])
         ->name('publikasi.destroy');
+    
+    Route::get('/export-pdf',[PublikasiController::class,'exportPdf'])
+    ->name('publikasi.export-pdf');
 });
 
 require __DIR__.'/auth.php';

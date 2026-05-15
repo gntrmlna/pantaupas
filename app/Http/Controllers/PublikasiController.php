@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Publikasi;
 use Illuminate\Http\Request;
 use App\Models\Upt;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PublikasiController extends Controller
 {
@@ -509,5 +510,118 @@ class PublikasiController extends Controller
         $publikasi->delete();
 
         return back()->with('success','Data berhasil dihapus');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $query=Publikasi::with('upt');
+
+        if($request->bulan){
+
+            $query->whereMonth(
+                'tanggal',
+                date('m',strtotime($request->bulan))
+            );
+
+            $query->whereYear(
+                'tanggal',
+                date('Y',strtotime($request->bulan))
+            );
+
+        }
+
+        $publikasis=$query
+            ->latest()
+            ->get();
+
+        $skorUPT=[];
+
+        $grouped=$publikasis->groupBy('upt');
+
+        $maxPublikasi=max(
+            $grouped->map(fn($item)=>$item->count())->toArray()
+            ?: [1]
+        );
+
+        foreach($grouped as $upt=>$items){
+
+            $jumlahPublikasi=$items->count();
+
+            $skorJumlah=
+                ($jumlahPublikasi/$maxPublikasi)*40;
+
+            $mingguAktif=$items
+                ->groupBy(fn($item)=>
+                    Carbon::parse($item->tanggal)->weekOfMonth
+                )
+                ->count();
+
+            $skorKonsistensi=
+                ($mingguAktif/4)*35;
+
+            $nilaiKetepatan=[];
+
+            foreach($items as $item){
+
+                $selisih=
+                    Carbon::parse($item->tanggal)
+                    ->diffInDays(
+                        Carbon::parse($item->created_at),
+                        false
+                    );
+
+                if($selisih<=0){
+                    $nilai=100;
+                }
+                elseif($selisih==1){
+                    $nilai=80;
+                }
+                elseif($selisih==2){
+                    $nilai=60;
+                }
+                else{
+                    $nilai=0;
+                }
+
+                $nilaiKetepatan[]=$nilai;
+
+            }
+
+            $avg=collect($nilaiKetepatan)->avg();
+
+            $skorKetepatan=
+                ($avg/100)*25;
+
+            $total=round(
+                $skorJumlah+
+                $skorKonsistensi+
+                $skorKetepatan,
+                2
+            );
+
+            $skorUPT[]=[
+                'upt'=>$items->first()->upt,
+                'jumlah'=>$skorJumlah,
+                'konsistensi'=>$skorKonsistensi,
+                'ketepatan'=>$skorKetepatan,
+                'total'=>$total
+            ];
+
+        }
+
+        usort($skorUPT,
+            fn($a,$b)=>$b['total']<=>$a['total']
+        );
+
+        $periode=$request->bulan
+        ? Carbon::parse($request->bulan)->translatedFormat('F Y')
+        : 'Semua Periode';
+
+        $pdf=Pdf::loadView(
+            'pdf.laporan',
+            compact('publikasis','skorUPT','periode')
+        );
+
+        return $pdf->download('laporan-publikasi.pdf');
     }
 }

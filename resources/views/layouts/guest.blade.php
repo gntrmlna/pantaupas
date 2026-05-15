@@ -11,6 +11,7 @@
     >
 
     <title>PANTAU PAS</title>
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/logo.webp') }}">
 
     @vite([
         'resources/css/app.css',

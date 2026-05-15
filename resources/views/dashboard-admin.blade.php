@@ -2,82 +2,92 @@
 
 @section('content')
 
-<div>
+<div class="min-w-0 space-y-6 overflow-x-hidden">
 
-    <h1 class="mb-1 text-2xl font-bold">
-        Dashboard Publikasi
-    </h1>
+    <div>
+        <h1 class="mb-1 text-2xl font-bold">
+            Dashboard Publikasi
+        </h1>
 
-    <p class="mb-6 text-gray-500">
-        Monitoring publikasi UPT
-    </p>
+        <p class="text-gray-500">
+            Monitoring publikasi UPT
+        </p>
+    </div>
+
 
     <!-- FILTER -->
 
-    <div class="mb-5 flex flex-wrap items-center gap-3">
+    <div class="flex flex-col gap-3 rounded-3xl bg-white p-4 shadow sm:flex-row sm:items-center">
 
-        <input
-            type="month"
-            name="bulan"
-            value="{{ request('bulan') }}"
-            class="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm shadow-sm"
-            form="filterForm"
-        >
+        <input type="month"
+               name="bulan"
+               value="{{ request('bulan') }}"
+               class="rounded-xl border border-gray-200 px-4 py-2 text-sm"
+               form="filterForm">
 
-        <input
-            type="text"
-            name="search"
-            value="{{ request('search') }}"
-            placeholder="🔍 Cari UPT / kegiatan..."
-            class="w-full rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm shadow-sm md:w-80"
-            form="filterForm"
-        >
+        <input type="text"
+               name="search"
+               value="{{ request('search') }}"
+               placeholder="Cari UPT / kegiatan..."
+               class="flex-1 rounded-xl border border-gray-200 px-4 py-2 text-sm"
+               form="filterForm">
 
-        <button
-            form="filterForm"
-            class="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-black hover:brightness-95"
-        >
-            Filter
-        </button>
+        <div class="flex gap-2">
 
-        <a
-            href="{{ route('dashboard') }}"
-            class="rounded-xl bg-white px-4 py-2 text-sm shadow-sm"
-        >
-            Reset
-        </a>
+            <button form="filterForm"
+                    class="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-black">
+                Filter
+            </button>
+
+            <a href="{{ route('dashboard') }}"
+               class="rounded-xl border px-4 py-2 text-sm">
+                Reset
+            </a>
+
+        </div>
 
     </div>
 
-    <form
-        id="filterForm"
-        method="GET"
-        action="{{ route('dashboard') }}"
-    ></form>
+    <form id="filterForm"
+          method="GET"
+          action="{{ route('dashboard') }}">
+    </form>
+
+    <a id="exportPdfBtn"
+    href="{{ route('publikasi.export-pdf') }}"
+    class="rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow transition hover:-translate-y-1 hover:shadow-lg">
+
+        Export PDF
+
+    </a>
 
 
     <!-- CARD -->
 
-    <div class="grid gap-4 md:grid-cols-3">
+    <div class="grid min-w-0 gap-4 lg:grid-cols-3">
 
-        <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+        <div class="rounded-3xl border border-white/50 bg-white/80 p-5 shadow-sm backdrop-blur transition duration-300 hover:-translate-y-1 hover:shadow-xl">
 
             <p class="text-sm text-gray-500">
                 Total Publikasi
             </p>
 
-            <div class="mt-2 flex items-center justify-between">
+            <div class="mt-3 flex items-center justify-between">
 
-                <h2 class="text-3xl font-bold">
+                <div>
 
-                    {{ $publikasis->count() }}
+                    <h2 class="text-3xl font-bold">
+                        {{ $publikasis->count() }}
+                    </h2>
 
-                </h2>
+                    <p class="mt-1 text-xs text-gray-400">
+                        seluruh publikasi
+                    </p>
 
-                <div class="rounded-xl bg-yellow-100 p-3">
+                </div>
 
+                <div class="rounded-2xl bg-yellow-100 p-3 text-xl">
                     📊
-
                 </div>
 
             </div>
@@ -85,26 +95,29 @@
         </div>
 
 
-        <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+
+        <div class="rounded-3xl border border-white/50 bg-white/80 p-5 shadow-sm backdrop-blur transition duration-300 hover:-translate-y-1 hover:shadow-xl">
 
             <p class="text-sm text-gray-500">
-
                 Total UPT Aktif
-
             </p>
 
-            <div class="mt-2 flex items-center justify-between">
+            <div class="mt-3 flex items-center justify-between">
 
-                <h2 class="text-3xl font-bold">
+                <div>
 
-                    {{ $publikasis->groupBy('upt_id')->count() }}
+                    <h2 class="text-3xl font-bold">
+                        {{ $publikasis->groupBy('upt_id')->count() }}
+                    </h2>
 
-                </h2>
+                    <p class="mt-1 text-xs text-gray-400">
+                        UPT aktif publikasi
+                    </p>
 
-                <div class="rounded-xl bg-blue-100 p-3">
+                </div>
 
+                <div class="rounded-2xl bg-blue-100 p-3 text-xl">
                     🏢
-
                 </div>
 
             </div>
@@ -112,15 +125,14 @@
         </div>
 
 
-        <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+
+        <div class="rounded-3xl border border-white/50 bg-white/80 p-5 shadow-sm backdrop-blur transition duration-300 hover:-translate-y-1 hover:shadow-xl">
 
             <p class="text-sm text-gray-500">
-
                 UPT Teraktif
-
             </p>
 
-            <div class="mt-2">
+            <div class="mt-3">
 
                 <h2 class="font-semibold">
 
@@ -137,10 +149,8 @@
 
                 </h2>
 
-                <p class="mt-1 text-sm text-gray-400">
-
+                <p class="mt-1 text-xs text-gray-400">
                     publikasi tertinggi
-
                 </p>
 
             </div>
@@ -149,77 +159,116 @@
 
     </div>
 
-    <div class="mt-6 rounded-2xl bg-white p-6 shadow">
-        <div class="mb-5">
-            <h2 class="text-lg font-semibold">Ranking UPT</h2>
-            <p class="text-sm text-gray-500">Berdasarkan total penilaian publikasi</p>
-        </div>
 
-        <div class="space-y-3">
-            @foreach($skorUPT as $index=>$nilai)
-            <div class="flex items-center justify-between rounded-xl border p-4 hover:bg-gray-50">
-                <div class="flex items-center gap-4">
-                    <div class="w-10 text-center text-2xl">
-                        @if($index==0) 🥇
-                        @elseif($index==1) 🥈
-                        @elseif($index==2) 🥉
-                        @else #{{ $index+1 }}
-                        @endif
-                    </div>
 
-                    <div>
-                        <h3 class="font-semibold">{{ $nilai['upt']->nama }}</h3>
+    <!-- CHART + RANKING -->
 
-                        <p class="text-sm text-gray-500">
-                            @if($nilai['total']>=85)
-                                Sangat Baik
-                            @elseif($nilai['total']>=70)
-                                Baik
-                            @elseif($nilai['total']>=50)
-                                Cukup
-                            @else
-                                Kurang
-                            @endif
-                        </p>
-                    </div>
-                </div>
+    <div class="grid min-w-0 gap-6 xl:grid-cols-3">
 
-                <div class="text-right">
-                    <h2 class="text-2xl font-bold">{{ $nilai['total'] }}</h2>
-                    <p class="text-xs text-gray-400">poin</p>
-                </div>
+        <!-- CHART -->
+
+        <div class="rounded-3xl bg-white p-6 shadow xl:col-span-2">
+
+            <div class="mb-4">
+                <h2 class="font-semibold">
+                    Statistik Publikasi UPT
+                </h2>
+
+                <p class="text-sm text-gray-500">
+                    Distribusi publikasi tiap UPT
+                </p>
             </div>
-            @endforeach
+
+            <div class="mx-auto w-full max-w-sm">
+                <canvas id="publikasiChart"></canvas>
+            </div>
+
         </div>
+
+
+
+        <!-- RANKING -->
+
+        <div class="rounded-3xl bg-white p-6 shadow">
+
+            <div class="mb-5">
+                <h2 class="font-semibold">
+                    Ranking UPT
+                </h2>
+
+                <p class="text-sm text-gray-500">
+                    Berdasarkan total nilai
+                </p>
+            </div>
+
+            <div class="space-y-3">
+
+                @foreach($skorUPT as $index=>$nilai)
+
+                <div class="flex items-center justify-between rounded-2xl border p-4 transition hover:bg-gray-50">
+
+                    <div class="flex items-center gap-3">
+
+                        <div class="text-2xl">
+
+                            @if($index==0)
+                                🥇
+                            @elseif($index==1)
+                                🥈
+                            @elseif($index==2)
+                                🥉
+                            @else
+                                #{{ $index+1 }}
+                            @endif
+
+                        </div>
+
+                        <div>
+
+                            <h3 class="truncate font-medium">
+                                {{ $nilai['upt']->nama }}
+                            </h3>
+
+                            <p class="text-xs text-gray-500">
+                                {{ $nilai['total'] }} poin
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                @endforeach
+
+            </div>
+
+        </div>
+
     </div>
+
 
 
     <!-- PENILAIAN -->
 
-    <div class="mt-6">
+    <div>
 
         <h2 class="mb-4 font-semibold">
-
             Penilaian UPT
-
         </h2>
 
-        <div class="overflow-hidden rounded-2xl bg-white shadow">
+        <div class="w-full overflow-x-auto rounded-3xl bg-white shadow">
 
-            <table class="w-full">
+            <table class="w-full min-w-[700px]">
 
-                <thead class="bg-gray-50">
+                <thead class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500">
 
                     <tr class="text-center">
 
-                        <th class="p-4">UPT</th>
-
+                        <th class="px-3 py-4">UPT</th>
                         <th>Jumlah</th>
-
                         <th>Konsistensi</th>
-
                         <th>Ketepatan</th>
-
                         <th>Total</th>
 
                     </tr>
@@ -230,36 +279,26 @@
 
                     @foreach($skorUPT as $nilai)
 
-                    <tr class="border-b text-center">
+                    <tr class="border-b text-center transition hover:bg-gray-50">
 
-                        <td class="p-4">
-
+                        <td class="px-3 py-4">
                             {{ $nilai['upt']->nama }}
-
                         </td>
 
                         <td>
-
                             {{ round($nilai['jumlah'],2) }}
-
                         </td>
 
                         <td>
-
                             {{ round($nilai['konsistensi'],2) }}
-
                         </td>
 
                         <td>
-
                             {{ round($nilai['ketepatan'],2) }}
-
                         </td>
 
                         <td class="font-bold">
-
                             {{ $nilai['total'] }}
-
                         </td>
 
                     </tr>
@@ -275,71 +314,40 @@
     </div>
 
 
-    <!-- CHART -->
-
-    <div class="mt-6 rounded-2xl bg-white p-6 shadow">
-
-        <h2 class="mb-4 font-semibold">
-
-            Statistik Publikasi UPT
-
-        </h2>
-
-        <div class="mx-auto w-full max-w-sm">
-
-            <canvas id="publikasiChart"></canvas>
-
-        </div>
-
-    </div>
-
 
     <!-- CARD UPT -->
 
-    <div class="mt-6">
+    <div>
 
         <h2 class="mb-4 font-semibold">
-
             Publikasi per UPT
-
         </h2>
 
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
             @foreach($upts as $upt)
 
-                @php
-
-                    $jumlah =
-                    $publikasis
+            @php
+                $jumlah=$publikasis
                     ->where('upt_id',$upt->id)
                     ->count();
+            @endphp
 
-                @endphp
+            <div class="rounded-3xl border border-white/50 bg-white/80 p-5 shadow-sm backdrop-blur transition duration-300 hover:-translate-y-1 hover:shadow-xl">
 
-                <div
-                    class="rounded-2xl border border-gray-100 bg-white p-5 shadow transition hover:-translate-y-1 hover:shadow-lg"
-                >
+                <h3 class="text-sm text-gray-500">
+                    {{ $upt->nama }}
+                </h3>
 
-                    <h3 class="text-sm text-gray-500">
+                <h2 class="mt-2 text-3xl font-bold">
+                    {{ $jumlah }}
+                </h2>
 
-                        {{ $upt->nama }}
+                <p class="text-sm text-gray-400">
+                    publikasi
+                </p>
 
-                    </h3>
-
-                    <h2 class="mt-2 text-3xl font-bold">
-
-                        {{ $jumlah }}
-
-                    </h2>
-
-                    <p class="text-sm text-gray-400">
-
-                        publikasi
-
-                    </p>
-
-                </div>
+            </div>
 
             @endforeach
 
@@ -348,34 +356,41 @@
     </div>
 
 
+
     <!-- TABEL -->
 
-    <div class="mt-6">
+    <div>
 
-        <h2 class="mb-3 font-semibold">
+        <div class="mb-4 flex items-center justify-between">
 
-            Data Publikasi
+            <div>
+                <h2 class="font-semibold">
+                    Data Publikasi
+                </h2>
 
-        </h2>
+                <p class="text-sm text-gray-500">
+                    5 publikasi terbaru
+                </p>
+            </div>
 
-        <div class="overflow-x-auto rounded-2xl bg-white shadow">
+            <a href="{{ route('publikasi.index') }}"
+               class="text-sm font-medium text-primary hover:underline">
+                Lihat semua →
+            </a>
 
-            <table class="w-full">
+        </div>
 
-                <thead class="bg-gray-50">
+        <div class="w-full overflow-x-auto rounded-3xl bg-white shadow">
 
-                    <tr>
+            <table class="w-full min-w-[700px]">
 
-                        <th class="p-4">
+                <thead class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500">
 
-                            UPT
+                    <tr class="text-center">
 
-                        </th>
-
+                        <th class="px-3 py-4">UPT</th>
                         <th>Tanggal</th>
-
                         <th>Kegiatan</th>
-
                         <th>Link</th>
 
                     </tr>
@@ -386,33 +401,25 @@
 
                     @forelse($publikasis->take(5) as $item)
 
-                    <tr class="border-b text-center">
+                    <tr class="border-b text-center transition hover:bg-gray-50">
 
-                        <td class="p-4">
-
+                        <td class="px-3 py-4">
                             {{ $item->upt->nama }}
-
                         </td>
 
                         <td>
-
                             {{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d F Y H:i') }}
-
                         </td>
 
                         <td>
-
                             {{ $item->kegiatan }}
-
                         </td>
 
                         <td>
 
-                            <a
-                                href="{{ $item->link }}"
-                                target="_blank"
-                                class="text-primary"
-                            >
+                            <a href="{{ $item->link }}"
+                               target="_blank"
+                               class="font-medium text-primary hover:underline">
 
                                 Lihat
 
@@ -426,10 +433,8 @@
 
                     <tr>
 
-                        <td
-                            colspan="4"
-                            class="p-6 text-center text-gray-500"
-                        >
+                        <td colspan="4"
+                            class="p-8 text-center text-gray-500">
 
                             Belum ada data
 
@@ -444,26 +449,18 @@
             </table>
 
         </div>
-        <div class="border-t p-4 text-center">
-            <a href="{{ route('publikasi.index') }}"
-            class="text-sm font-medium text-primary hover:underline">
-                Lihat semua →
-            </a>
-        </div>
 
     </div>
 
 </div>
 
 
+
 <script>
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-    const ctx=
-    document.getElementById(
-        'publikasiChart'
-    );
+    const ctx=document.getElementById('publikasiChart');
 
     new Chart(ctx,{
 
@@ -475,9 +472,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 
             datasets:[{
 
-                data:@json(
-                    $chartData->values()
-                ),
+                data:@json($chartData->values()),
 
                 backgroundColor:[
 
@@ -507,14 +502,12 @@ document.addEventListener("DOMContentLoaded",()=>{
 
             aspectRatio:1,
 
-            cutout:'65%',
+            cutout:'68%',
 
             plugins:{
 
                 legend:{
-
                     position:'bottom'
-
                 }
 
             }
@@ -526,5 +519,27 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 
 </script>
+<script>
 
+const exportBtn=document.getElementById('exportPdfBtn');
+
+const bulanInput=document.querySelector('input[name="bulan"]');
+
+exportBtn.addEventListener('click',function(e){
+
+    e.preventDefault();
+
+    let url="{{ route('publikasi.export-pdf') }}";
+
+    if(bulanInput.value){
+
+        url+='?bulan='+bulanInput.value;
+
+    }
+
+    window.location.href=url;
+
+});
+
+</script>
 @endsection
