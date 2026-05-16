@@ -158,4 +158,94 @@
     </div>
 </div>
 
+<div id="deleteModal"
+     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4">
+
+    <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-xl">
+
+        <div class="mb-4 flex items-center gap-3">
+
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 text-2xl">
+                🗑️
+            </div>
+
+            <div>
+
+                <h2 class="text-lg font-bold">
+                    Hapus User
+                </h2>
+
+                <p class="text-sm text-gray-500">
+                    User yang dihapus tidak dapat dikembalikan
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="mt-6 flex justify-end gap-3">
+
+            <button onclick="closeDeleteModal()"
+                    class="rounded-xl border px-4 py-2 text-sm font-medium">
+
+                Batal
+
+            </button>
+
+
+            <form id="deleteForm"
+                  method="POST">
+
+                @csrf
+                @method('DELETE')
+
+                <button class="rounded-xl bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600">
+
+                    Ya, Hapus
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+function openDeleteModal(url){
+
+    document
+        .getElementById('deleteModal')
+        .classList
+        .remove('hidden');
+
+    document
+        .getElementById('deleteModal')
+        .classList
+        .add('flex');
+
+    document
+        .getElementById('deleteForm')
+        .action=url;
+
+}
+
+function closeDeleteModal(){
+
+    document
+        .getElementById('deleteModal')
+        .classList
+        .remove('flex');
+
+    document
+        .getElementById('deleteModal')
+        .classList
+        .add('hidden');
+
+}
+
+</script>
 @endsection

@@ -115,24 +115,6 @@
 
                 </a>
 
-
-                <form method="POST"
-                      action="{{ route('logout') }}">
-
-                    @csrf
-
-                    <button class="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-white/80 transition hover:bg-red-500/20">
-
-                        <span class="text-lg">🚪</span>
-
-                        <span class="menu-text">
-                            Logout
-                        </span>
-
-                    </button>
-
-                </form>
-
             </nav>
 
         </aside>
@@ -157,6 +139,62 @@
                 </h1>
 
             </div>
+
+            <div class="mb-6 flex items-center justify-end">
+
+            <div class="relative">
+
+                <button onclick="toggleProfileMenu()"
+                        class="flex items-center gap-3 rounded-2xl bg-white px-4 py-2 shadow">
+
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-primary font-bold text-white">
+                        {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+                    </div>
+
+                    <div class="text-left">
+
+                        <h3 class="text-sm font-semibold">
+                            {{ auth()->user()->name }}
+                        </h3>
+
+                        <p class="text-xs text-gray-500">
+                            {{ ucfirst(auth()->user()->role) }}
+                        </p>
+
+                    </div>
+
+                </button>
+
+
+                <div id="profileMenu"
+                    class="absolute right-0 mt-3 hidden w-56 overflow-hidden rounded-2xl bg-white shadow-xl">
+
+                    <a href="{{ route('profile.edit') }}"
+                    class="block px-4 py-3 text-sm transition hover:bg-gray-50">
+
+                        Profil
+
+                    </a>
+
+
+                    <form method="POST"
+                        action="{{ route('logout') }}">
+
+                        @csrf
+
+                        <button class="block w-full px-4 py-3 text-left text-sm text-red-500 transition hover:bg-red-50">
+
+                            Logout
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
 
             @yield('content')
 
@@ -286,6 +324,18 @@
             logoSub.classList.remove('hidden');
 
         }
+
+    }
+
+    </script>
+    <script>
+
+    function toggleProfileMenu(){
+
+        document
+            .getElementById('profileMenu')
+            .classList
+            .toggle('hidden');
 
     }
 
